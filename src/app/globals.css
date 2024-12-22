@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 
 @plugin '@tailwindcss/aspect-ratio';
+@source "./src/components";
+@source "./src/slices";
 
 @theme {
   --font-*: initial;
