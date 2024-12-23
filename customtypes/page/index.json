@@ -35,7 +35,7 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
-            "hero": {
+            "parallax_hero": {
               "type": "SharedSlice"
             },
             "quote": {

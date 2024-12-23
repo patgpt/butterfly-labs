@@ -5,6 +5,45 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 /**
+ * Content for Footer documents
+ */
+interface FooterDocumentData {
+  /**
+   * Copyright Text field in *Footer*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.copyright_text
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  copyright_text: prismic.RichTextField;
+
+  /**
+   * Footer Logo field in *Footer*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: footer.footer_logo
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  footer_logo: prismic.ImageField;
+}
+
+/**
+ * Footer document from Prismic
+ *
+ * - **API ID**: `footer`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FooterDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID;
+
+/**
  * Item in *Navigation → Links*
  */
 export interface NavigationDocumentDataLinksItem {
@@ -42,7 +81,7 @@ interface NavigationDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#group
    */
-  links: prismic.GroupField<Simplify<NavigationDocumentDataLinksItem>>;
+  links: prismic.GroupField;
 }
 
 /**
@@ -55,14 +94,10 @@ interface NavigationDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type NavigationDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<NavigationDocumentData>,
-    "navigation",
-    Lang
-  >;
+  prismic.PrismicDocumentWithoutUID;
 
 type PageDocumentDataSlicesSlice =
-  | HeroSlice
+  | ParallaxHeroSlice
   | QuoteSlice
   | TextSlice
   | ImageSlice
@@ -93,7 +128,7 @@ interface PageDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
    */
-  parent: prismic.ContentRelationshipField<"page">;
+  parent: prismic.ContentRelationshipField;
 
   /**
    * Slice Zone field in *Page*
@@ -104,7 +139,7 @@ interface PageDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#slices
    */
-  slices: prismic.SliceZone<PageDocumentDataSlicesSlice> /**
+  slices: prismic.SliceZone /**
    * Meta Title field in *Page*
    *
    * - **Field Type**: Text
@@ -135,7 +170,7 @@ interface PageDocumentData {
    * - **Tab**: SEO & Metadata
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  meta_image: prismic.ImageField<never>;
+  meta_image: prismic.ImageField;
 }
 
 /**
@@ -148,7 +183,7 @@ interface PageDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type PageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
+  prismic.PrismicDocumentWithUID;
 
 /**
  * Content for Settings documents
@@ -176,88 +211,13 @@ interface SettingsDocumentData {
  * @typeParam Lang - Language API ID of the document.
  */
 export type SettingsDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<SettingsDocumentData>,
-    "settings",
-    Lang
-  >;
+  prismic.PrismicDocumentWithoutUID;
 
 export type AllDocumentTypes =
+  | FooterDocument
   | NavigationDocument
   | PageDocument
   | SettingsDocument;
-
-/**
- * Primary content in *Hero → Default → Primary*
- */
-export interface HeroSliceDefaultPrimary {
-  /**
-   * Text field in *Hero → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: hero.default.primary.text
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  text: prismic.RichTextField;
-
-  /**
-   * Button Link field in *Hero → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: *None*
-   * - **API ID Path**: hero.default.primary.buttonLink
-   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
-   */
-  buttonLink: prismic.LinkField;
-
-  /**
-   * Button Text field in *Hero → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: hero.default.primary.buttonText
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  buttonText: prismic.KeyTextField;
-
-  /**
-   * Background Image field in *Hero → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: hero.default.primary.backgroundImage
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  backgroundImage: prismic.ImageField<never>;
-}
-
-/**
- * Default variation for Hero Slice
- *
- * - **API ID**: `default`
- * - **Description**: Hero
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type HeroSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<HeroSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Hero*
- */
-type HeroSliceVariation = HeroSliceDefault;
-
-/**
- * Hero Shared Slice
- *
- * - **API ID**: `hero`
- * - **Description**: Hero
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
  * Primary content in *Image → Default → Primary*
@@ -271,7 +231,7 @@ export interface ImageSliceDefaultPrimary {
    * - **API ID Path**: image.default.primary.image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  image: prismic.ImageField<never>;
+  image: prismic.ImageField;
 }
 
 /**
@@ -281,11 +241,7 @@ export interface ImageSliceDefaultPrimary {
  * - **Description**: Image
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type ImageSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<ImageSliceDefaultPrimary>,
-  never
->;
+export type ImageSliceDefault = prismic.SharedSliceVariation;
 
 /**
  * Primary content in *Image → Banner → Primary*
@@ -299,7 +255,7 @@ export interface ImageSliceBannerPrimary {
    * - **API ID Path**: image.banner.primary.image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  image: prismic.ImageField<never>;
+  image: prismic.ImageField;
 }
 
 /**
@@ -309,11 +265,7 @@ export interface ImageSliceBannerPrimary {
  * - **Description**: Image
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type ImageSliceBanner = prismic.SharedSliceVariation<
-  "banner",
-  Simplify<ImageSliceBannerPrimary>,
-  never
->;
+export type ImageSliceBanner = prismic.SharedSliceVariation;
 
 /**
  * Slice variation for *Image*
@@ -327,7 +279,7 @@ type ImageSliceVariation = ImageSliceDefault | ImageSliceBanner;
  * - **Description**: Image
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type ImageSlice = prismic.SharedSlice<"image", ImageSliceVariation>;
+export type ImageSlice = prismic.SharedSlice;
 
 /**
  * Item in *ImageCards → Default → Primary → Cards*
@@ -341,7 +293,7 @@ export interface ImageCardsSliceDefaultPrimaryCardsItem {
    * - **API ID Path**: image_cards.default.primary.cards[].image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  image: prismic.ImageField<never>;
+  image: prismic.ImageField;
 
   /**
    * Text field in *ImageCards → Default → Primary → Cards*
@@ -396,7 +348,7 @@ export interface ImageCardsSliceDefaultPrimary {
    * - **API ID Path**: image_cards.default.primary.cards[]
    * - **Documentation**: https://prismic.io/docs/field#group
    */
-  cards: prismic.GroupField<Simplify<ImageCardsSliceDefaultPrimaryCardsItem>>;
+  cards: prismic.GroupField;
 }
 
 /**
@@ -406,11 +358,7 @@ export interface ImageCardsSliceDefaultPrimary {
  * - **Description**: ImageCards
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type ImageCardsSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<ImageCardsSliceDefaultPrimary>,
-  never
->;
+export type ImageCardsSliceDefault = prismic.SharedSliceVariation;
 
 /**
  * Slice variation for *ImageCards*
@@ -424,10 +372,75 @@ type ImageCardsSliceVariation = ImageCardsSliceDefault;
  * - **Description**: ImageCards
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type ImageCardsSlice = prismic.SharedSlice<
-  "image_cards",
-  ImageCardsSliceVariation
->;
+export type ImageCardsSlice = prismic.SharedSlice;
+
+/**
+ * Primary content in *ParallaxHero → Home → Primary*
+ */
+export interface ParallaxHeroSliceDefaultPrimary {
+  /**
+   * Hero Image field in *ParallaxHero → Home → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_hero.default.primary.hero_image
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  hero_image: prismic.ImageField;
+
+  /**
+   * Headline field in *ParallaxHero → Home → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_hero.default.primary.headline
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  headline: prismic.RichTextField;
+
+  /**
+   * Subheading field in *ParallaxHero → Home → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_hero.default.primary.subheading
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  subheading: prismic.RichTextField;
+
+  /**
+   * CTA Button field in *ParallaxHero → Home → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: parallax_hero.default.primary.cta_button
+   * - **Documentation**: https://prismic.io/docs/field#link-content-relationship
+   */
+  cta_button: prismic.LinkField;
+}
+
+/**
+ * Home variation for ParallaxHero Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ParallaxHeroSliceDefault = prismic.SharedSliceVariation;
+
+/**
+ * Slice variation for *ParallaxHero*
+ */
+type ParallaxHeroSliceVariation = ParallaxHeroSliceDefault;
+
+/**
+ * ParallaxHero Shared Slice
+ *
+ * - **API ID**: `parallax_hero`
+ * - **Description**: ParallaxHero
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type ParallaxHeroSlice = prismic.SharedSlice;
 
 /**
  * Primary content in *Quote → Default → Primary*
@@ -461,11 +474,7 @@ export interface QuoteSliceDefaultPrimary {
  * - **Description**: Quote
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type QuoteSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<QuoteSliceDefaultPrimary>,
-  never
->;
+export type QuoteSliceDefault = prismic.SharedSliceVariation;
 
 /**
  * Slice variation for *Quote*
@@ -479,7 +488,7 @@ type QuoteSliceVariation = QuoteSliceDefault;
  * - **Description**: Quote
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type QuoteSlice = prismic.SharedSlice<"quote", QuoteSliceVariation>;
+export type QuoteSlice = prismic.SharedSlice;
 
 /**
  * Primary content in *Text → Default → Primary*
@@ -503,11 +512,7 @@ export interface TextSliceDefaultPrimary {
  * - **Description**: Text
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<TextSliceDefaultPrimary>,
-  never
->;
+export type TextSliceDefault = prismic.SharedSliceVariation;
 
 /**
  * Primary content in *Text → Two Columns → Primary*
@@ -531,11 +536,7 @@ export interface TextSliceTwoColumnsPrimary {
  * - **Description**: Text
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextSliceTwoColumns = prismic.SharedSliceVariation<
-  "twoColumns",
-  Simplify<TextSliceTwoColumnsPrimary>,
-  never
->;
+export type TextSliceTwoColumns = prismic.SharedSliceVariation;
 
 /**
  * Slice variation for *Text*
@@ -549,7 +550,7 @@ type TextSliceVariation = TextSliceDefault | TextSliceTwoColumns;
  * - **Description**: Text
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextSlice = prismic.SharedSlice<"text", TextSliceVariation>;
+export type TextSlice = prismic.SharedSlice;
 
 /**
  * Primary content in *TextWithImage → Default → Primary*
@@ -573,7 +574,7 @@ export interface TextWithImageSliceDefaultPrimary {
    * - **API ID Path**: text_with_image.default.primary.image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  image: prismic.ImageField<never>;
+  image: prismic.ImageField;
 }
 
 /**
@@ -583,11 +584,7 @@ export interface TextWithImageSliceDefaultPrimary {
  * - **Description**: TextWithImage
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextWithImageSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<TextWithImageSliceDefaultPrimary>,
-  never
->;
+export type TextWithImageSliceDefault = prismic.SharedSliceVariation;
 
 /**
  * Primary content in *TextWithImage → With Button → Primary*
@@ -631,7 +628,7 @@ export interface TextWithImageSliceWithButtonPrimary {
    * - **API ID Path**: text_with_image.withButton.primary.image
    * - **Documentation**: https://prismic.io/docs/field#image
    */
-  image: prismic.ImageField<never>;
+  image: prismic.ImageField;
 }
 
 /**
@@ -641,11 +638,7 @@ export interface TextWithImageSliceWithButtonPrimary {
  * - **Description**: TextWithImage
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextWithImageSliceWithButton = prismic.SharedSliceVariation<
-  "withButton",
-  Simplify<TextWithImageSliceWithButtonPrimary>,
-  never
->;
+export type TextWithImageSliceWithButton = prismic.SharedSliceVariation;
 
 /**
  * Slice variation for *TextWithImage*
@@ -661,21 +654,31 @@ type TextWithImageSliceVariation =
  * - **Description**: TextWithImage
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type TextWithImageSlice = prismic.SharedSlice<
-  "text_with_image",
-  TextWithImageSliceVariation
->;
+export type TextWithImageSlice = prismic.SharedSlice;
 
 declare module "@prismicio/client" {
   interface CreateClient {
     (
       repositoryNameOrEndpoint: string,
       options?: prismic.ClientConfig,
-    ): prismic.Client<AllDocumentTypes>;
+    ): prismic.Client;
+  }
+
+  interface CreateWriteClient {
+    (
+      repositoryNameOrEndpoint: string,
+      options: prismic.WriteClientConfig,
+    ): prismic.WriteClient;
+  }
+
+  interface CreateMigration {
+    (): prismic.Migration;
   }
 
   namespace Content {
     export type {
+      FooterDocument,
+      FooterDocumentData,
       NavigationDocument,
       NavigationDocumentData,
       NavigationDocumentDataLinksItem,
@@ -685,10 +688,6 @@ declare module "@prismicio/client" {
       SettingsDocument,
       SettingsDocumentData,
       AllDocumentTypes,
-      HeroSlice,
-      HeroSliceDefaultPrimary,
-      HeroSliceVariation,
-      HeroSliceDefault,
       ImageSlice,
       ImageSliceDefaultPrimary,
       ImageSliceBannerPrimary,
@@ -700,6 +699,10 @@ declare module "@prismicio/client" {
       ImageCardsSliceDefaultPrimary,
       ImageCardsSliceVariation,
       ImageCardsSliceDefault,
+      ParallaxHeroSlice,
+      ParallaxHeroSliceDefaultPrimary,
+      ParallaxHeroSliceVariation,
+      ParallaxHeroSliceDefault,
       QuoteSlice,
       QuoteSliceDefaultPrimary,
       QuoteSliceVariation,
